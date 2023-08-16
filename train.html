@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" type="text/css" href="style.css" />
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+    <script src="app.js"></script>
+
+    <title>Railway App</title>
+  </head>
+  <body>
+    <header class="text-black text-center">
+      <h1>Train App</h1>
+    </header>
+    <button
+      class="map-button"
+      data-toggle="modal"
+      data-target="#railwayMapModal"
+    >
+      🗺️
+    </button>
+
+    <!-- Modal for the Indian Railway Map -->
+    <div
+      class="modal fade"
+      id="railwayMapModal"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="railwayMapModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="railwayMapModalLabel">
+              Indian Railway Map
+            </h5>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <img
+              src="indian-railway-map.jpg"
+              alt="Indian Railway Map"
+              class="img-fluid"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="container mt-5">
+      <div class="row">
+        <div class="col-md-4">
+          <div class="feature-box">
+            <h3 class="mb-4">Trains between Stations</h3>
+            <div class="form-group">
+              <label for="sourceStation">Source Station:</label>
+              <input
+                type="text"
+                id="sourceStation"
+                class="form-control"
+                placeholder="Ex: New Delhi"
+              />
+              <div
+                id="sourceSuggestionsWrapper"
+                class="suggestions-wrapper"
+                style="display: none"
+              >
+                <div id="sourceSuggestions" class="suggestions"></div>
+                <!-- This div will display the suggestions -->
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="destinationStation">Destination Station:</label>
+              <input
+                type="text"
+                id="destinationStation"
+                class="form-control"
+                placeholder="Ex: Bhopal"
+              />
+              <div
+                id="destinationSuggestionsWrapper"
+                class="suggestions-wrapper"
+                style="display: none"
+              >
+                <div id="destinationSuggestions" class="suggestions"></div>
+                <!-- This div will display the suggestions -->
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="date">Date:</label>
+              <input type="date" class="form-control" id="date" />
+            </div>
+            <button class="btn btn-primary btn-block" id="searchTrains">
+              Search
+            </button>
+            <div class="mt-3">
+              <!-- Train details will be displayed here -->
+              <div
+                id="tableModal"
+                class="modal fade"
+                tabindex="-1"
+                role="dialog"
+              >
+                <div class="modal-dialog modal-lg" role="document">
+                  <div
+                    class="modal-content"
+                    style="display: inline-table; border-radius: 1.3rem"
+                  >
+                    <div class="modal-header">
+                      <h5 class="modal-title">Search Results</h5>
+                      <button
+                        type="button"
+                        class="close"
+                        data-dismiss="modal"
+                        aria-label="Close"
+                      >
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div class="modal-body">
+                      <div id="tableContainer"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="feature-box">
+            <h3 class="mb-4">Train Schedule</h3>
+            <div class="form-group">
+              <label for="trainNumber">Train Number:</label>
+              <input
+                placeholder="Ex: 12962"
+                type="text"
+                class="form-control"
+                id="trainNumber"
+              />
+              <div
+                id="trainNumberSuggestionsWrapper"
+                class="suggestions-wrapper"
+                style="display: none"
+              >
+                <div id="trainNumberSuggestions" class="suggestions"></div>
+                <!-- This div will display the suggestions -->
+              </div>
+            </div>
+            <button class="btn btn-primary btn-block" id="searchSchedule">
+              Search
+            </button>
+            <div class="mt-3">
+              <!-- Train schedule details will be displayed here -->
+              <div
+                id="scheduleModal"
+                class="modal fade"
+                tabindex="-1"
+                role="dialog"
+              >
+                <div class="modal-dialog modal-lg" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title">Train Schedule</h5>
+                      <button
+                        type="button"
+                        class="close"
+                        data-dismiss="modal"
+                        aria-label="Close"
+                      >
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div class="modal-body">
+                      <div id="scheduleTableContainer"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="feature-box">
+            <h3 class="mb-4">Station Search</h3>
+            <div class="form-group">
+              <label for="stationName">Station Name:</label>
+              <input
+                placeholder="Ex: Bhopal"
+                type="text"
+                class="form-control"
+                id="stationName"
+              />
+              <div
+                id="stationNameSuggestionsWrapper"
+                class="suggestions-wrapper"
+                style="display: none"
+              >
+                <div id="stationNameSuggestions" class="suggestions"></div>
+                <!-- This div will display the suggestions -->
+              </div>
+              <input type="checkbox" id="live" />Live Station
+            </div>
+            <button class="btn btn-primary btn-block" id="searchStation">
+              Search
+            </button>
+            <div
+              id="stationModal"
+              class="modal fade"
+              tabindex="-1"
+              role="dialog"
+            >
+              <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title">Station Details</h5>
+                    <button
+                      type="button"
+                      class="close"
+                      data-dismiss="modal"
+                      aria-label="Close"
+                    >
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <div class="modal-body" id="stationDetails">
+                    <!-- Station details table will be displayed here -->
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="feature-box">
+            <h3 class="mb-4">Live Train Status</h3>
+            <div class="form-group">
+              <label for="liveTrainNumber">Train Number:</label>
+              <input
+                placeholder="Ex: 19301"
+                type="text"
+                class="form-control"
+                id="liveTrainNumber"
+              />
+              <div
+                id="liveTrainNumberSuggestionsWrapper"
+                class="suggestions-wrapper"
+                style="display: none"
+              >
+                <div id="liveTrainNumberSuggestions" class="suggestions"></div>
+                <!-- This div will display the suggestions -->
+              </div>
+            </div>
+            <button
+              class="btn btn-primary btn-block"
+              id="searchLiveTrainStatus"
+            >
+              Search
+            </button>
+            <div class="mt-3">
+              <!-- Live train status details will be displayed here -->
+              <div
+                id="liveTrainStatusModal"
+                class="modal fade"
+                tabindex="-1"
+                role="dialog"
+                aria-labelledby="liveTrainStatusModalLabel"
+                aria-hidden="true"
+              >
+                <div class="modal-dialog modal-lg" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="liveTrainStatusModalLabel">
+                        Live Train Status
+                      </h5>
+                      <button
+                        type="button"
+                        class="close"
+                        data-dismiss="modal"
+                        aria-label="Close"
+                      >
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div class="modal-body" id="liveTrainStatusDetails">
+                      <!-- Live train status details will be displayed here -->
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="feature-box">
+        <h3 class="mb-4 text-center">Seat Availability</h3>
+        <form id="availabilityForm">
+          <div class="form-group">
+            <label for="sourceStation">Source Station:</label>
+            <input
+              placeholder="Ex: BPL"
+              type="text"
+              class="form-control"
+              id="src"
+            />
+            <div
+              id="srcSuggestionsWrapper"
+              class="suggestions-wrapper"
+              style="display: none"
+            >
+              <div id="srcSuggestions" class="suggestions"></div>
+              <!-- This div will display the suggestions -->
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="destinationStation">Destination Station:</label>
+            <input
+              placeholder="Ex: BPL"
+              type="text"
+              class="form-control"
+              id="dest"
+            />
+            <div
+              id="destSuggestionsWrapper"
+              class="suggestions-wrapper"
+              style="display: none"
+            >
+              <div id="destSuggestions" class="suggestions"></div>
+              <!-- This div will display the suggestions -->
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="date">Date:</label>
+            <input type="date" class="form-control" id="d" />
+          </div>
+          <div class="form-group">
+            <label for="class">Class:</label>
+            <select class="form-control" id="class">
+              <option value="SL" selected>Sleeper</option>
+              <option value="3A">Third AC</option>
+              <option value="2A">Second AC</option>
+              <option value="1A">First AC</option>
+              <option value="2S">Second Sitting (2S)</option>
+              <option value="CC">AC Chair car (CC)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="trainNumber">Train Number:</label>
+            <input
+              placeholder="Ex: 19301"
+              type="text"
+              class="form-control"
+              id="trN"
+            />
+          </div>
+          <div class="form-group">
+            <label for="quota">Quota:</label>
+            <select class="form-control" id="quota">
+              <option value="GN" selected>General</option>
+              <option value="TQ">Tatkal</option>
+            </select>
+          </div>
+          <button
+            type="submit"
+            class="btn btn-primary btn-block"
+            id="searchAvailability"
+          >
+            Get Availability
+          </button>
+        </form>
+        <div
+          class="modal fade"
+          id="availabilityModal"
+          tabindex="-1"
+          role="dialog"
+          aria-labelledby="availabilityModalLabel"
+          aria-hidden="true"
+        >
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="availabilityModalLabel">
+                  Seat Availability Details
+                </h5>
+                <button
+                  type="button"
+                  class="close"
+                  data-dismiss="modal"
+                  aria-label="Close"
+                >
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <!-- Data from API response will be displayed here -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <footer class="bg-dark text-light text-center py-3">
+      Created By Priyansh
+    </footer>
+    <div id="warningMessage" class="warning-message"></div>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  </body>
+</html>
