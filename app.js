@@ -834,8 +834,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
       const columns = [
         station.sname + " (" + station.scode + ")",
-        "Arr: " + station.arrive + " Dept: " + station.depart,
-        "Arr: " + station.actArr + " Dept: " + station.actDep,
+        "Arr: " + station.arrive + ", Dept: " + station.depart,
+        "Arr: " + station.actArr + ", Dept: " + station.actDep,
         station.delayArr === -1 || station.delayArr === 0
           ? "No Delay"
           : station.delayArr + " mins",
