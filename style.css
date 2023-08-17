@@ -71,3 +71,15 @@ body {
   overflow: hidden;
   text-overflow: ellipsis; /* Show ellipsis (...) if content overflows */
 }
+
+/* Add this CSS for responsive design */
+@media (max-width: 768px) {
+  table {
+    font-size: 14px;
+  }
+
+  .modal-dialog {
+    max-width: 90%;
+    margin: 1rem auto;
+  }
+}
