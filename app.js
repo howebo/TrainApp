@@ -769,12 +769,21 @@ document.addEventListener("DOMContentLoaded", function () {
     getLiveTrainStatus(trainNumber);
   });
 
+  function formatDateForAPI(userDate) {
+    const dateObject = new Date(userDate);
+    const day = dateObject.getDate();
+    const month = dateObject.toLocaleString("en-US", { month: "short" });
+    const year = dateObject.getFullYear();
+    return `${day} ${month} ${year}`;
+  }
   // Function to get live train status from the API
   function getLiveTrainStatus(trainNumber) {
     const apiKey = "012562ae-60a9-4fcd-84d6-f1354ee1ea48";
     const currentDate = new Date().toISOString().split("T")[0]; // Get current date in yyyy-mm-dd format
     const apiUrl = `https://www.trainman.in/services/get-ntes-running-status/${trainNumber}?key=${apiKey}&int=1&refresh=true&date=${currentDate}`;
 
+    const statusDateInput = document.getElementById("statusDate").value;
+    const apiFormattedDate = formatDateForAPI(statusDateInput);
     // Make the API call
     fetch(apiUrl)
       .then((response) => response.json())
@@ -790,7 +799,7 @@ document.addEventListener("DOMContentLoaded", function () {
           setTimeout(() => {
             warningMessageElement.style.display = "none";
           }, 7000); // Hide after 7 seconds
-        } else displayLiveTrainStatus(data);
+        } else displayLiveTrainStatus(data, apiFormattedDate);
       })
       .catch((error) => {
         console.error("Error fetching live train status:", error);
@@ -802,7 +811,7 @@ document.addEventListener("DOMContentLoaded", function () {
   // Updated displayLiveTrainStatus function
   // Updated displayLiveTrainStatus function
   // Updated displayLiveTrainStatus function
-  function displayLiveTrainStatus(result) {
+  function displayLiveTrainStatus(result, selectedDate) {
     const modalBody = document.getElementById("liveTrainStatusDetails");
 
     // Create a table to display the station details
@@ -822,9 +831,12 @@ document.addEventListener("DOMContentLoaded", function () {
     tableHeader.appendChild(headerRow);
     table.appendChild(tableHeader);
 
+    const matchingRake = result.rakes.find((rake) => {
+      return rake.startDate === selectedDate;
+    });
     // Create table body
     const tableBody = document.createElement("tbody");
-    result.rakes[result.rakes.length - 1].stations.forEach((station) => {
+    matchingRake.stations.forEach((station) => {
       // Filter out stations with "stops" value not equal to 1
       if (station.stops !== 1) {
         return;
