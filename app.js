@@ -809,8 +809,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Function to display the live train status in the modal
   // Updated displayLiveTrainStatus function
-  // Updated displayLiveTrainStatus function
-  // Updated displayLiveTrainStatus function
   function displayLiveTrainStatus(result, selectedDate) {
     const modalBody = document.getElementById("liveTrainStatusDetails");
 
@@ -836,6 +834,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
     // Create table body
     const tableBody = document.createElement("tbody");
+    console.log(JSON.stringify(matchingRake.stations));
     matchingRake.stations.forEach((station) => {
       // Filter out stations with "stops" value not equal to 1
       if (station.stops !== 1) {
@@ -843,14 +842,26 @@ document.addEventListener("DOMContentLoaded", function () {
       }
       const row = document.createElement("tr");
       const isArrivalDelayed = station.delayArr > 0;
-
       const columns = [
         station.sname + " (" + station.scode + ")",
         "Arr: " + station.arrive + ", Dept: " + station.depart,
         "Arr: " + station.actArr + ", Dept: " + station.actDep,
         station.delayArr === -1 || station.delayArr === 0
           ? "No Delay"
-          : station.delayArr + " mins",
+          : (() => {
+              const delayArr = parseInt(station.delayArr);
+              if (delayArr >= 60) {
+                const hours = Math.floor(delayArr / 60);
+                const minutes = delayArr % 60;
+                return (
+                  hours +
+                  " hours" +
+                  (minutes > 0 ? " " + minutes + " mins" : "")
+                );
+              } else {
+                return delayArr + " mins";
+              }
+            })(),
       ];
       columns.forEach((columnText, index) => {
         const column = document.createElement("td");
