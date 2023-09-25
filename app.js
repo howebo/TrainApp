@@ -94,6 +94,8 @@ document.addEventListener("DOMContentLoaded", function () {
     table.classList.add("table", "table-bordered", "table-striped");
 
     const thead = document.createElement("thead");
+    thead.style.color = "white";
+    thead.style.backgroundColor = "#337ab7";
     const headerRow = document.createElement("tr");
 
     const headers = [
@@ -245,6 +247,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Create table header
     const thead = document.createElement("thead");
+    thead.style.color = "white";
+    thead.style.backgroundColor = "#337ab7";
     const headerRow = document.createElement("tr");
     const headers = [
       "Station Code",
@@ -359,6 +363,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Create table header
     const thead = document.createElement("thead");
+    thead.style.color = "white";
+    thead.style.backgroundColor = "#337ab7";
     const headerRow = document.createElement("tr");
     const headers = [
       "Train Number",
@@ -507,6 +513,43 @@ document.addEventListener("DOMContentLoaded", function () {
   const form = document.getElementById("availabilityForm");
 
   const availabilityModal = document.getElementById("availabilityModal");
+  // Add event listeners to the Next and Previous day buttons in the modal
+  document
+    .getElementById("showNextDay")
+    .addEventListener("click", showNextDayAvailability);
+  document
+    .getElementById("showPrevDay")
+    .addEventListener("click", showPrevDayAvailability);
+  // Function to update the date input value
+  function updateDate(dateValue) {
+    document.getElementById("d").value = dateValue;
+  }
+
+  // Function to handle next day availability
+  function showNextDayAvailability() {
+    const currentDate = new Date(document.getElementById("d").value);
+    const nextDate = new Date(currentDate);
+    nextDate.setDate(nextDate.getDate() + 6); // Add 6 days
+
+    // Update the date input with the next date
+    updateDate(nextDate.toISOString().split("T")[0]);
+
+    // Trigger the form submission to fetch availability with the updated date
+    form.dispatchEvent(new Event("submit"));
+  }
+
+  // Function to handle previous day availability
+  function showPrevDayAvailability() {
+    const currentDate = new Date(document.getElementById("d").value);
+    const prevDate = new Date(currentDate);
+    prevDate.setDate(prevDate.getDate() - 6); // Subtract 6 days
+
+    // Update the date input with the previous date
+    updateDate(prevDate.toISOString().split("T")[0]);
+
+    // Trigger the form submission to fetch availability with the updated date
+    form.dispatchEvent(new Event("submit"));
+  }
 
   form.addEventListener("submit", function (event) {
     event.preventDefault();
@@ -518,7 +561,8 @@ document.addEventListener("DOMContentLoaded", function () {
       .pop();
     const date = document.getElementById("d").value.split("-").join("");
     const selectedClass = document.getElementById("class").value;
-    const trainNumber = document.getElementById("trN").value;
+    let trainNumber = document.getElementById("tNumber").value;
+    trainNumber = trainNumber.slice(trainNumber.lastIndexOf("-") + 1);
     const selectedQuota = document.getElementById("quota").value;
 
     const apiUrl = `https://www.irctc.co.in/eticketing/protected/mapps1/avlFarenquiry/${trainNumber}/${date}/${sourceStation}/${destinationStation}/${selectedClass}/${selectedQuota}/N`;
@@ -561,19 +605,42 @@ document.addEventListener("DOMContentLoaded", function () {
     })
       .then((response) => response.json())
       .then((data) => {
+        const errorDiv = document.getElementById("errorDiv");
         if (data.errorMessage === undefined) {
           // Update your UI with the seat availability information
           let modalContent = "<ul>";
-          modalContent += `<li>Train Name: ${data.trainName}</li>`;
-          modalContent += `<li>Distance: ${data.distance} km</li>`;
-          modalContent += `<li>Total Fare: ₹${data.totalFare}</li>`;
+
+          modalContent += '<table class="table table-bordered">';
+          modalContent +=
+            '<thead><tr style="color: white; background-color: #337ab7;">' +
+            '<th style="width: 12%;">Train Number</th>' +
+            '<th style="width: 15%;">Train Name</th>' +
+            '<th style="width: 12%;">Source Station</th>' +
+            '<th style="width: 12%;">Destination Station</th>' +
+            '<th style="width: 10%;">Total Fare</th>' +
+            '<th style="width: 10%;">Distance</th>' +
+            '<th style="width: 10%;">Quota Code</th>' +
+            '<th style="width: 9%;">Class</th></tr></thead>';
+          modalContent += "<tbody>";
+          // Add a table row with specific values
+          modalContent +=
+            `<tr><td>${data.trainNo}</td>` +
+            `<td>${data.trainName}</td>` +
+            `<td>${data.from}</td>` +
+            `<td>${data.to}</td>` +
+            `<td>₹${data.totalFare}</td>` +
+            `<td>${data.distance} km</td>` +
+            `<td>${data.quota}</td>` +
+            `<td>${data.enqClass}</td></tr>`;
+
+          modalContent += "</tbody>";
+          modalContent += "</table>";
           // ... Add more fields as needed ...
 
           // Add availability details to modal content
-          modalContent += "<li>Availability Details:";
           modalContent += '<table class="table table-bordered">';
           modalContent +=
-            "<thead><tr><th>Date</th><th>Status</th></tr></thead>";
+            '<thead><tr style="color: white; background-color: #337ab7;"><th>Date</th><th>Status</th></tr></thead>';
           modalContent += "<tbody>";
           data.avlDayList.forEach((availability) => {
             const availabilityStatus = availability.availablityStatus;
@@ -605,6 +672,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
           // Open the modal
           $(availabilityModal).modal("show");
+          errorDiv.style.display = "none";
         } else {
           const warningMessageElement =
             document.getElementById("warningMessage");
@@ -616,6 +684,14 @@ document.addEventListener("DOMContentLoaded", function () {
           setTimeout(() => {
             warningMessageElement.style.display = "none";
           }, 7000); // Hide after 7 seconds
+
+          errorDiv.innerText = data.errorMessage;
+          errorDiv.style.display = "block";
+
+          // Hide the error message div after a certain time (e.g., 7 seconds)
+          setTimeout(() => {
+            errorDiv.style.display = "none";
+          }, 7000); // Hide after 7 seconds
         }
       })
       .catch((error) => {
@@ -623,6 +699,7 @@ document.addEventListener("DOMContentLoaded", function () {
         console.error("Error:", error);
       });
   });
+
   function formatDate(dateString) {
     const [day, month, year] = dateString.split("-");
     const options = { year: "numeric", month: "long", day: "numeric" };
@@ -677,7 +754,8 @@ document.addEventListener("DOMContentLoaded", function () {
     // Fetch the station data from the JSON file
     if (
       inputElement.id === "trainNumber" ||
-      inputElement.id === "liveTrainNumber"
+      inputElement.id === "liveTrainNumber" ||
+      inputElement.id === "tNumber"
     )
       fetchTrainData((data) => {
         stationData = data;
@@ -739,6 +817,11 @@ document.addEventListener("DOMContentLoaded", function () {
     "trainNumber",
     "trainNumberSuggestionsWrapper",
     "trainNumberSuggestions"
+  );
+  handleStationInput(
+    "tNumber",
+    "tNumberSuggestionsWrapper",
+    "tNumberSuggestions"
   );
   handleStationInput("src", "srcSuggestionsWrapper", "srcSuggestions");
   handleStationInput("dest", "destSuggestionsWrapper", "destSuggestions");
@@ -834,7 +917,6 @@ document.addEventListener("DOMContentLoaded", function () {
     });
     // Create table body
     const tableBody = document.createElement("tbody");
-    console.log(JSON.stringify(matchingRake.stations));
     matchingRake.stations.forEach((station) => {
       // Filter out stations with "stops" value not equal to 1
       if (station.stops !== 1) {

@@ -337,9 +337,30 @@
         <h3 class="mb-4 text-center">Seat Availability</h3>
         <form id="availabilityForm">
           <div class="form-group">
+            <label for="tNumber">Train Number:</label>
+            <input
+              placeholder="Ex: 12962"
+              type="text"
+              class="form-control"
+              id="tNumber"
+            />
+            <div
+              id="tNumberSuggestionsWrapper"
+              class="suggestions-wrapper"
+              style="display: block; position: inherit; width: auto"
+            >
+              <div id="tNumberSuggestions" class="suggestions"></div>
+              <!-- This div will display the suggestions -->
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="date">Date:</label>
+            <input type="date" class="form-control" id="d" />
+          </div>
+          <div class="form-group">
             <label for="sourceStation">Source Station:</label>
             <input
-              placeholder="Ex: BPL"
+              placeholder="Ex: INDB"
               type="text"
               class="form-control"
               id="src"
@@ -371,10 +392,6 @@
             </div>
           </div>
           <div class="form-group">
-            <label for="date">Date:</label>
-            <input type="date" class="form-control" id="d" />
-          </div>
-          <div class="form-group">
             <label for="class">Class:</label>
             <select class="form-control" id="class">
               <option value="SL" selected>Sleeper</option>
@@ -384,15 +401,6 @@
               <option value="2S">Second Sitting (2S)</option>
               <option value="CC">AC Chair car (CC)</option>
             </select>
-          </div>
-          <div class="form-group">
-            <label for="trainNumber">Train Number:</label>
-            <input
-              placeholder="Ex: 19301"
-              type="text"
-              class="form-control"
-              id="trN"
-            />
           </div>
           <div class="form-group">
             <label for="quota">Quota:</label>
@@ -437,6 +445,20 @@
               </div>
               <div class="modal-body">
                 <!-- Data from API response will be displayed here -->
+              </div>
+              <div
+                id="errorDiv"
+                class="alert alert-danger"
+                style="display: none"
+              ></div>
+              <!-- Add Next and Previous Day buttons -->
+              <div class="modal-footer" style="justify-content: space-between">
+                <button type="button" class="btn btn-primary" id="showPrevDay">
+                  Previous Day
+                </button>
+                <button type="button" class="btn btn-primary" id="showNextDay">
+                  Next Day
+                </button>
               </div>
             </div>
           </div>
