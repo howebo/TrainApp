@@ -22,9 +22,7 @@ document.addEventListener("DOMContentLoaded", function () {
     let sourceStation = document.getElementById("sourceStation").value;
     let destinationStation =
       document.getElementById("destinationStation").value;
-    console.log("clicked");
     if (sourceStation != "" && destinationStation != "") {
-      console.log("SRC", sourceStation, "DEST", destinationStation);
       const temp = sourceStation;
       document.getElementById("sourceStation").value = destinationStation;
       document.getElementById("destinationStation").value = temp;
