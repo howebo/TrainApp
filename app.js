@@ -15,6 +15,22 @@ document.addEventListener("DOMContentLoaded", function () {
   searchTrainsButton.addEventListener("click", searchTrains);
   searchScheduleButton.addEventListener("click", searchSchedule);
 
+  // switch icon, swap values of source and destination station and vice versa
+  const switchIcon = document.getElementById("switch-icon");
+  switchIcon.addEventListener("click", swapStationsName);
+  function swapStationsName() {
+    let sourceStation = document.getElementById("sourceStation").value;
+    let destinationStation =
+      document.getElementById("destinationStation").value;
+    console.log("clicked");
+    if (sourceStation != "" && destinationStation != "") {
+      console.log("SRC", sourceStation, "DEST", destinationStation);
+      const temp = sourceStation;
+      document.getElementById("sourceStation").value = destinationStation;
+      document.getElementById("destinationStation").value = temp;
+    }
+  }
+
   function searchTrains() {
     const sourceStation = document
       .getElementById("sourceStation")

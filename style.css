@@ -83,3 +83,8 @@ body {
     margin: 1rem auto;
   }
 }
+
+.switch-icon {
+  margin-left: 135px;
+  cursor: pointer;
+}
