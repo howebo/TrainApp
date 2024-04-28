@@ -725,7 +725,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Function to fetch station data from the JSON file
   function fetchStationData(callback) {
-    fetch("stations.json")
+    fetch("DB/stations.json")
       .then((response) => response.json())
       .then((data) => {
         callback(data);
@@ -736,7 +736,7 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function fetchTrainData(callback) {
-    fetch("trains.json")
+    fetch("DB/trains.json")
       .then((response) => response.json())
       .then((data) => {
         callback(data);
