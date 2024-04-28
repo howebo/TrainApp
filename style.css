@@ -18,7 +18,7 @@ body {
   background-color: lavender;
   padding: 20px;
   border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: rgba(3, 102, 214, 0.3) 0px 0px 0px 3px;
   margin-bottom: 20px;
 }
 .mb-4 {
