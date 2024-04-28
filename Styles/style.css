@@ -88,3 +88,9 @@ body {
   margin-left: 135px;
   cursor: pointer;
 }
+
+.checkbox {
+  width: 35px;
+  height: 12px;
+  margin-top: 12px;
+}
